@@ -11,7 +11,7 @@
     <groupId>com.pintailconsultingllc</groupId>
     <artifactId>opentracing-demo-springboot</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <packaging>war</packaging>
+    <packaging>jar</packaging>
     <name>opentracing-demo-springboot</name>
     <description>Demo project for Spring Boot and OpenTracing API</description>
 
