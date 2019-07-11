@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore;
+﻿using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace opentracing_demo_aspnetcore
 {
@@ -18,7 +12,10 @@ namespace opentracing_demo_aspnetcore
         }
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
-            WebHost.CreateDefaultBuilder(args)
-                .UseStartup<Startup>();
+            WebHost.CreateDefaultBuilder(args).UseStartup<Startup>().ConfigureServices(services =>
+            {
+                // Enables and automatically starts the instrumentation!
+                services.AddOpenTracing();
+            });
     }
 }
