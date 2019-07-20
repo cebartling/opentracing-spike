@@ -1,5 +1,7 @@
-version: '3.3'
+version: '3.7'
+
 services:
+
   db:
     image: mysql:8
     restart: always
@@ -21,6 +23,19 @@ services:
     volumes:
       - ./docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
       - my-db:/var/lib/mysql
+
+  springboot:
+    image: opentracing-demo-springboot:latest
+    restart: always
+    depends_on:
+      - db
+    ports:
+      # <Port exposed> : < Tomcat port running inside container>
+      - '5000:8085'
+    expose:
+      # Opens port 3306 on the container
+      - '5000'
+
 # Names our volume
 volumes:
   my-db:

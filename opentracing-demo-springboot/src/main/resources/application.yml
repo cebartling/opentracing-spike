@@ -48,23 +48,16 @@ spring:
         initializationFailTimeout: 5000
 
 
-remote.connect.timeout: 1000
-remote.request.timeout: 20000
-
-
-environment:
-  name: DEMO
-
-
----
-spring:
-  profiles: local
-
 remote:
   connect:
     timeout: 1000
   request:
     timeout: 20000
+
+
+---
+spring:
+  profiles: local
 
 server:
   port: 8085
@@ -72,12 +65,3 @@ server:
 management:
   server:
     port: 9085
-
----
-spring:
-  profiles: dev
-
----
-spring:
-  profiles: production
-
