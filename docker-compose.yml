@@ -1,10 +1,60 @@
 version: '3.7'
 
 services:
+  storage:
+    image: openzipkin/zipkin-mysql:latest
+    container_name: zipkin-mysql
+    # Uncomment to expose the storage port for testing
+    ports:
+      - 3306:3306
+    volumes:
+      - openzipkin_dbfiles:/mysql/data
+    restart: unless-stopped
+
+  zipkin:
+    image: openzipkin/zipkin:latest
+    container_name: zipkin-server
+    # Environment settings are defined here https://github.com/openzipkin/zipkin/tree/1.19.0/zipkin-server#environment-variables
+    environment:
+      - STORAGE_TYPE=mysql
+      # Point the zipkin at the storage backend
+      - MYSQL_HOST=zipkin-mysql
+      # Uncomment to enable scribe
+      # - SCRIBE_ENABLED=true
+      # Uncomment to enable self-tracing
+      # - SELF_TRACING_ENABLED=true
+      # Uncomment to enable debug logging
+      # - JAVA_OPTS=-Dlogging.level.zipkin=DEBUG
+    ports:
+      # Port used for the Zipkin UI and HTTP Api
+      - 9411:9411
+    expose:
+      # Opens specified port on the container
+      - '9411'
+    depends_on:
+      - storage
+    restart: unless-stopped
+
+  dependencies:
+    image: openzipkin/zipkin-dependencies:latest
+    container_name: zipkin-dependencies
+    entrypoint: crond -f
+    environment:
+      - STORAGE_TYPE=mysql
+      - MYSQL_HOST=zipkin-mysql
+      # Add the baked-in username and password for the zipkin-mysql image
+      - MYSQL_USER=zipkin
+      - MYSQL_PASS=zipkin
+      # Uncomment to adjust memory used by the dependencies job
+      - JAVA_OPTS=-verbose:gc -Xms512m -Xmx512m
+    depends_on:
+      - storage
+    restart: unless-stopped
 
   db:
     image: mysql:8
-    restart: always
+    container_name: opentracing-demo-mysql-server
+    restart: unless-stopped
     environment:
       MYSQL_DATABASE: 'opentracing_demo_db1'
       # So you don't have to use root, but you can if you like
@@ -15,10 +65,10 @@ services:
       MYSQL_ROOT_PASSWORD: 'opentracing'
     ports:
       # <Port exposed> : < MySQL Port running inside container>
-      - '3306:3306'
+      - '3307:3306'
     expose:
-      # Opens port 3306 on the container
-      - '3306'
+      # Opens port 3307 on the container
+      - '3307'
     volumes:
       # Where our data will be persisted
       - ./docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
@@ -26,7 +76,8 @@ services:
 
   springboot:
     image: opentracing-demo-springboot:latest
-    restart: always
+    container_name: opentracing-demo-springboot
+    restart: unless-stopped
     depends_on:
       - db
     ports:
@@ -38,7 +89,8 @@ services:
 
   aspnetcore:
     image: opentracing-demo-aspnetcore:latest
-    restart: always
+    container_name: opentracing-demo-aspnetcore
+    restart: unless-stopped
     depends_on:
       - db
     ports:
@@ -51,3 +103,4 @@ services:
 # Names our volume
 volumes:
   my-db:
+  openzipkin_dbfiles:
