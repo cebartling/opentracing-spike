@@ -1,0 +1,83 @@
+spring.profiles.active: ${wls.type},${wls.type}${wls.stack},${wls.type}${wls.role}
+
+server:
+  servlet:
+    context-path: /springboot-service
+    session:
+      timeout: 1200s
+  tomcat.compression: true
+  error:
+    include-stacktrace: always
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus
+  metrics:
+    use-global-registry: true
+    enable:
+      logback: true
+      jvm: false
+      process: false
+      system: false
+      tomcat: false
+      http: true
+    export:
+      prometheus:
+        enabled: false
+      logging:
+        enabled: true
+      security:
+        ignored: /**
+      endpoints:
+        shutdown:
+          enabled: true
+
+spring:
+  application:
+    name: springboot-service
+  jmx.enabled: false
+  restTemplate:
+    connect:
+      timeout: 30000
+    read:
+      timeout: 30000
+    datasource:
+      hikari:
+        initializationFailTimeout: 5000
+
+
+remote.connect.timeout: 1000
+remote.request.timeout: 20000
+
+
+environment:
+  name: DEMO
+
+
+---
+spring:
+  profiles: local
+
+remote:
+  connect:
+    timeout: 1000
+  request:
+    timeout: 20000
+
+server:
+  port: 8085
+
+management:
+  server:
+    port: 9085
+
+---
+spring:
+  profiles: dev
+
+---
+spring:
+  profiles: production
+
