@@ -21,6 +21,7 @@ Spike solution around using OpenTracing API and various tools for observability 
 ## Running the spike solution
 
 1. Start docker-compose from the project root directory: `docker-compose up`
+1. View the Zipkin server UI at [http://localhost:9411/zipkin/](http://localhost:9411/zipkin/). 
 
 ## Clean up
 
@@ -28,5 +29,3 @@ Spike solution around using OpenTracing API and various tools for observability 
 1. Stop docker-compose: `docker-compose down`
 1. Clean up the mounted volumes: `docker system prune --volumes --force`
 1. Optional: If you want to clean up the docker images that were pulled: `docker system prune --all --force`
-
-
