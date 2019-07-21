@@ -1,6 +1,7 @@
 # OpenTracing API spike solution
 
-Spike solution around using OpenTracing API and various tools for observability of microservices.
+Spike solution around using OpenTracing API and various tools for observability of microservices. Adrian Cole's [presentation](https://www.youtube.com/watch?v=f9J1Av8rwCE) on distributed tracing and Open Zipkin. The 
+slide deck can be found [here](https://speakerdeck.com/adriancole/distributed-tracing-and-zipkin-at-netflixoss-barcelona).
 
 ## Build the Docker images
 
